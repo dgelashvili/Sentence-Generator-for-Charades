@@ -3,4 +3,6 @@ project(SentenceGeneratorForCharades)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(SentenceGeneratorForCharades main.cpp)
+include_directories(include)
+
+add_executable(SentenceGeneratorForCharades main.cpp src/Server.cpp)
