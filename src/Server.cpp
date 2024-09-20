@@ -1,25 +1,32 @@
 #include "Server.h"
+
+#include <FileReader.h>
+
 #include "HelperFunctions.h"
 #include <thread>
 
-Server::Server(std::shared_ptr<RatingDAO> ratingDAO)
-    : ratingDAO(std::move(ratingDAO)) {}
+Server::Server(std::shared_ptr<RatingDAO> ratingDAO, std::shared_ptr<WordDAO> nounDAO,
+            std::shared_ptr<WordDAO> adjectiveDAO, std::shared_ptr<WordDAO> verbDAO,
+            std::shared_ptr<WordDAO> pronounDAO, std::shared_ptr<WordDAO> adverbDAO)
+    : ratingDAO(std::move(ratingDAO)), nounDAO(std::move(nounDAO)),
+        adjectiveDAO(std::move(adjectiveDAO)), verbDAO(std::move(verbDAO)),
+            pronounDAO(std::move(pronounDAO)), adverbDAO(std::move(adverbDAO)) {}
 
 void Server::start() {
     while (true) {
         std::string serverMessage = "What would you like to do?\n";
-        serverMessage += "(GenerateSentence/GetTopSentences/FillWords/Exit): ";
+        serverMessage += "GenerateSentence(gen)/GetTopSentences(top)/FillWords(fill)/Exit(exit): ";
 
-        if (std::string userInput = promptUser(serverMessage); userInput == "GenerateSentence") {
+        if (std::string userInput = promptUser(serverMessage); userInput == "gen") {
             newSentence();
             system("cls");
-        } else if (userInput == "GetTopSentences") {
+        } else if (userInput == "top") {
             topSentences();
             system("cls");
-        } else if (userInput == "FillWords") {
+        } else if (userInput == "fill") {
             fillWords();
             system("cls");
-        } else if (userInput == "Exit") {
+        } else if (userInput == "exit") {
             std::cout << "Goodbye!" << std::endl;
             break;
         } else {
@@ -31,7 +38,7 @@ void Server::start() {
 }
 
 void Server::newSentence() const {
-    const std::string sentence = "taxi taxi taxi"; //= generate new sentence
+    const std::string sentence = nounDAO->getRandomWord(); //gen new sentence
     playWithSentence(sentence);
 }
 
@@ -66,18 +73,28 @@ void Server::playWithSentence(const std::string& sentence) const {
     std::this_thread::sleep_for(std::chrono::seconds(2));
 }
 
-void Server::fillWords() {
+void Server::fillWords() const {
     system("cls");
     std::cout << "If you want to use this command correctly, "
                     "please ensure that 'words' directory contains files:" << std::endl;
-    std::cout << "Nouns.pdf    Verbs.pdf     Adjectives.pdf" << std::endl;
+    std::cout << "Nouns.txt  Verbs.txt  Adjectives.txt Prepositions.txt Adverbs.txt" << std::endl;
 
     if (promptUser("Once you are ready, type 'ready': ") == "ready") {
-        // add words to db
+        const auto nounReader = FileReader("../words/Nouns.txt", nounDAO);
+        const auto verbReader = FileReader("../words/Verbs.txt", verbDAO);
+        const auto adjectiveReader = FileReader("../words/Adjectives.txt", adjectiveDAO);
+        const auto pronounReader = FileReader("../words/Prepositions.txt", pronounDAO);
+        const auto adverbReader = FileReader("../words/Adverbs.txt", adverbDAO);
+
+        nounReader.readAndStore();
+        verbReader.readAndStore();
+        adjectiveReader.readAndStore();
+        pronounReader.readAndStore();
+        adverbReader.readAndStore();
     }
 
     std::cout << "Returning to main menu..." << std::endl;
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::this_thread::sleep_for(std::chrono::seconds(3));
 }
 
 

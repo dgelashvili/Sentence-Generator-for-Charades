@@ -1,0 +1,10 @@
+on
+in
+under
+over
+with
+without
+beside
+between
+behind
+before

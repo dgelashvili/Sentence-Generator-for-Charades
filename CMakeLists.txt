@@ -7,4 +7,7 @@ include_directories(include sqlite)
 
 add_executable(SentenceGeneratorForCharades main.cpp
                 sqlite/sqlite3.h sqlite/sqlite3.c
-                src/Server.cpp src/RatingDao.cpp)
+                src/Server.cpp
+                src/RatingDao.cpp src/WordDao.cpp
+                src/FileReader.cpp
+)
