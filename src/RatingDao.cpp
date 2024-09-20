@@ -1,5 +1,4 @@
 #include "RatingDao.h"
-
 #include <stdexcept>
 
 RatingDAO::RatingDAO(const std::string& dbPath)

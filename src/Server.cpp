@@ -1,16 +1,16 @@
-#include "Server.h"
-
-#include <FileReader.h>
-
-#include "HelperFunctions.h"
 #include <thread>
+#include "Server.h"
+#include "FileReader.h"
+#include "HelperFunctions.h"
 
 Server::Server(std::shared_ptr<RatingDAO> ratingDAO, std::shared_ptr<WordDAO> nounDAO,
             std::shared_ptr<WordDAO> adjectiveDAO, std::shared_ptr<WordDAO> verbDAO,
-            std::shared_ptr<WordDAO> pronounDAO, std::shared_ptr<WordDAO> adverbDAO)
+            std::shared_ptr<WordDAO> prepositionDAO, std::shared_ptr<WordDAO> adverbDAO)
     : ratingDAO(std::move(ratingDAO)), nounDAO(std::move(nounDAO)),
-        adjectiveDAO(std::move(adjectiveDAO)), verbDAO(std::move(verbDAO)),
-            pronounDAO(std::move(pronounDAO)), adverbDAO(std::move(adverbDAO)) {}
+      adjectiveDAO(std::move(adjectiveDAO)), verbDAO(std::move(verbDAO)),
+      prepositionDAO(std::move(prepositionDAO)), adverbDAO(std::move(adverbDAO)),
+      cfg(this->nounDAO, this->adjectiveDAO, this->verbDAO, this->prepositionDAO, this->adverbDAO) {
+}
 
 void Server::start() {
     while (true) {
@@ -37,8 +37,8 @@ void Server::start() {
     }
 }
 
-void Server::newSentence() const {
-    const std::string sentence = nounDAO->getRandomWord(); //gen new sentence
+void Server::newSentence() {
+    const std::string sentence = cfg.generateSentence();
     playWithSentence(sentence);
 }
 
@@ -83,7 +83,7 @@ void Server::fillWords() const {
         const auto nounReader = FileReader("../words/Nouns.txt", nounDAO);
         const auto verbReader = FileReader("../words/Verbs.txt", verbDAO);
         const auto adjectiveReader = FileReader("../words/Adjectives.txt", adjectiveDAO);
-        const auto pronounReader = FileReader("../words/Prepositions.txt", pronounDAO);
+        const auto pronounReader = FileReader("../words/Prepositions.txt", prepositionDAO);
         const auto adverbReader = FileReader("../words/Adverbs.txt", adverbDAO);
 
         nounReader.readAndStore();

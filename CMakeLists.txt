@@ -9,5 +9,5 @@ add_executable(SentenceGeneratorForCharades main.cpp
                 sqlite/sqlite3.h sqlite/sqlite3.c
                 src/Server.cpp
                 src/RatingDao.cpp src/WordDao.cpp
-                src/FileReader.cpp
+                src/FileReader.cpp src/CFG.cpp
 )

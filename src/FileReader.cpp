@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
+#include <unordered_set>
 #include <memory>
 #include <utility>
 #include "WordDao.h"
@@ -19,11 +19,10 @@ void FileReader::readAndStore() const {
         }
 
         std::string word;
-        std::vector<std::string> words;
+        std::unordered_set<std::string> words;
         while (std::getline(file, word)) {
-                words.push_back(word);
+                words.insert(word);
         }
-
         if (!words.empty()) {
                 wordDAO->emptyTable();
                 for (const auto& each_word : words) {
