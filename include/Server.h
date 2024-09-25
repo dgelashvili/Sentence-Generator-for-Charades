@@ -7,6 +7,20 @@
 #include "WordDao.h"
 #include "CFG.h"
 
+/**
+ * @class Server
+ * @brief The Server class provides the main interface for the application.
+ *
+ * It facilitates user interactions, allowing for sentence generation,
+ * retrieval of top-rated sentences, and the population of word databases
+ * from text files. The class utilizes the RatingDAO to manage sentence
+ * ratings and incorporates multiple WordDAO instances for handling various
+ * categories of words, including nouns, adjectives, verbs, prepositions,
+ * and adverbs. It also employs the CFG class to generate sentences based
+ * on context-free grammar. The server operates in a continuous loop,
+ * prompting the user for actions until they decide to exit.
+ */
+
 class Server {
 public:
     Server(std::shared_ptr<RatingDAO> ratingDAO, std::shared_ptr<WordDAO> nounDAO,

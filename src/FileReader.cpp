@@ -11,6 +11,12 @@ FileReader::FileReader(std::string fileName, std::shared_ptr<WordDAO> wordDAO)
         : fileName(std::move(fileName)), wordDAO(std::move(wordDAO)) {
 }
 
+/**
+ * @brief Reads the file and stores each word in the database.
+ *
+ * This method iterates through the file line by line, extracting words, and uses the WordDAO
+ * to store them in the database.
+ */
 void FileReader::readAndStore() const {
         std::ifstream file(fileName);
         if (!file.is_open()) {

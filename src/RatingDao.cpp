@@ -1,6 +1,13 @@
 #include "RatingDao.h"
 #include <stdexcept>
 
+/**
+ * @brief Constructor that opens a connection to the SQLite database.
+ *
+ * Initializes the DAO with the path to the database file.
+ *
+ * @param dbPath Path to the SQLite database file.
+ */
 RatingDAO::RatingDAO(const std::string& dbPath)
     : db(nullptr)
 {
@@ -21,12 +28,25 @@ RatingDAO::RatingDAO(const std::string& dbPath)
     }
 }
 
+/**
+ * @brief Destructor that closes the database connection.
+ *
+ * Ensures the SQLite database connection is properly closed when the object is destroyed.
+ */
 RatingDAO::~RatingDAO() {
     if (db != nullptr) {
         sqlite3_close(db);
     }
 }
 
+/**
+ * @brief Adds a rating for a given sentence to the database.
+ *
+ * Stores the sentence and the user's rating into the database for future retrieval.
+ *
+ * @param sentence The sentence being rated.
+ * @param rating The rating (e.g., 1-5) given by the user.
+ */
 void RatingDAO::addRating(const std::string& sentence, const int rating) const {
     sqlite3_stmt* stmt;
     const std::string insertSQL = "INSERT INTO Ratings (Sentence, Rating) VALUES (?, ?);";
@@ -45,6 +65,15 @@ void RatingDAO::addRating(const std::string& sentence, const int rating) const {
     sqlite3_finalize(stmt);
 }
 
+/**
+ * @brief Retrieves the top-rated sentences from the database.
+ *
+ * Returns a list of sentences with their average ratings, sorted in descending order by rating.
+ * The number of sentences returned is limited by the 'num' parameter.
+ *
+ * @param num The number of top-rated sentences to retrieve.
+ * @return A vector of pairs where each pair contains a sentence and its average rating.
+ */
 std::vector<std::pair<std::string, double>> RatingDAO::getTopSentences(int num) const {
     sqlite3_stmt* stmt;
     const std::string sql = "SELECT sentence, AVG(Rating) AS avg_rating "

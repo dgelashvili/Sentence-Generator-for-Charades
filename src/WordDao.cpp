@@ -1,6 +1,14 @@
 #include "WordDao.h"
 #include <stdexcept>
 
+/**
+ * @brief Constructor that opens a connection to the SQLite database and specifies the table.
+ *
+ * Initializes the DAO with the database path and table name where the words will be stored.
+ *
+ * @param dbPath Path to the SQLite database file.
+ * @param tableName Name of the table in the database where words are stored.
+ */
 WordDAO::WordDAO(const std::string &dbPath, const std::string& tableName)
     : db(nullptr), tableName(tableName)
 {
@@ -20,12 +28,22 @@ WordDAO::WordDAO(const std::string &dbPath, const std::string& tableName)
     }
 }
 
+/**
+ * @brief Destructor that closes the database connection.
+ *
+ * Ensures the SQLite database connection is properly closed when the object is destroyed.
+ */
 WordDAO::~WordDAO() {
     if (db != nullptr) {
         sqlite3_close(db);
     }
 }
 
+/**
+ * @brief Adds a word to the specified table in the database.
+ *
+ * @param word The word to add to the database.
+ */
 void WordDAO::addWord(const std::string &word) const {
     sqlite3_stmt* stmt;
     const std::string insertSQL = "INSERT INTO " + tableName + " (Word) VALUES (?);";
@@ -43,6 +61,13 @@ void WordDAO::addWord(const std::string &word) const {
     sqlite3_finalize(stmt);
 }
 
+/**
+ * @brief Retrieves a random word from the table.
+ *
+ * Returns a randomly selected word from the database table.
+ *
+ * @return A random word from the table.
+ */
 std::string WordDAO::getRandomWord() const {
     sqlite3_stmt* stmt;
     const std::string sql = "SELECT word "
@@ -63,6 +88,11 @@ std::string WordDAO::getRandomWord() const {
     return word;
 }
 
+/**
+ * @brief Clears all words from the table.
+ *
+ * Empties the entire table by removing all stored words.
+ */
 void WordDAO::emptyTable() const {
     const std::string sql = "DELETE FROM " + tableName + ";";
 
